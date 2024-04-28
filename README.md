@@ -1,6 +1,7 @@
 # Supabase ReactNative 
 
-![image](https://github.com/AbdelrahmanAbounida/supabase-rn/assets/93732583/aebddd5c-732b-4883-baa3-4f8f1e04e59f)
+
+![image](https://github.com/AbdelrahmanAbounida/supabase-rn/assets/93732583/2ea54c8b-daf9-403a-9782-74f7c86ff063)
 
 * Authentication
 * Authorization
