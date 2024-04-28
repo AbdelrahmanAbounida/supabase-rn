@@ -1,0 +1,51 @@
+*******************************
+Start the app 
+*******************************
+npx create-expo-app -t 
+
+>> choose the template to expo router navigation
+
+*******************************
+solving issues 
+*******************************
+>> npm cache clean --force
+
+>> npm install expo-cli --global
+
+
+*******************************
+Complete Setup 
+*******************************
+remove App.tsx to app/index.tsx 
+
+>> in package.json 
+"main": "expo-router/entry"
+
+>> app.json 
+"scheme": "myapp-scheme"
+
+*******************************
+layout 
+*******************************
+create _layout.tsx
+
+*******************************
+Expo router docs  
+*******************************
+# Routing types 
+
+- stack
+- Tabs
+- drawer 
+- Nesting Navigator
+- modal 
+- Shared routes  
+
+*******************************
+hookform - zod
+*******************************
+npm install react-hook-form @hookform/resolvers zod
+
+
+
+
