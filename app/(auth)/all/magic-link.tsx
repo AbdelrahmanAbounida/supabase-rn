@@ -3,7 +3,6 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  Button,
   ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
@@ -17,38 +16,40 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/lib/supabase";
 import AuthMessage from "@/components/auth/auth-message";
+import { makeRedirectUri } from "expo-auth-session";
 
-const loginformSchema = z.object({
+const magicLinkSchema = z.object({
   email: z
     .string()
     .min(1, { message: "Email is required" })
     .email({ message: "Email not valid" })
     .transform((value) => value.replaceAll(" ", "")),
-  password: z
-    .string()
-    .min(1, { message: "password mustn't be less than 4 characters" }),
 });
 
-const Login = () => {
+export default function MagicLink() {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<z.infer<typeof loginformSchema>>({
-    resolver: zodResolver(loginformSchema),
+  } = useForm<z.infer<typeof magicLinkSchema>>({
+    resolver: zodResolver(magicLinkSchema),
   });
+  const redirectTo = makeRedirectUri();
+  console.log({ redirectTo });
 
-  const handleLogin = async (data: z.infer<typeof loginformSchema>) => {
-    // const { error } = await supabase.auth.signOut()
-
+  const handleLogin = async (data: z.infer<typeof magicLinkSchema>) => {
     try {
       setloading(true);
       setloginError("");
-      const { data: res, error } = await supabase.auth.signInWithPassword({
+      const { data: res, error } = await supabase.auth.signInWithOtp({
         email: data.email,
-        password: data.password,
+        options: {
+          emailRedirectTo: "exp://192.168.0.115:8081", //redirectTo,
+          shouldCreateUser: true,
+        },
       });
       console.log({ user: res.user });
+      console.log({ error });
       if (error) {
         if (error.message.length > 50) {
           setloginError("Something went wrong!");
@@ -65,7 +66,6 @@ const Login = () => {
   };
 
   const [loginError, setloginError] = useState<string>("");
-  const [viewPassword, setviewPassword] = useState<boolean>(false);
   const [loading, setloading] = useState(false);
 
   return (
@@ -74,10 +74,20 @@ const Login = () => {
     >
       <View style={styles.main}>
         {/** title */}
-        <Text style={styles.title}>Login here</Text>
+        <Text style={styles.title}>Magic Link</Text>
 
         {/** subtitle */}
-        <Text style={styles.subtitle}>Welcome back you've been missed!</Text>
+        <Text
+          style={{
+            marginTop: 15,
+            fontSize: 15,
+            maxWidth: 220,
+            fontWeight: "500",
+            textAlign: "center",
+          }}
+        >
+          Login-signup with email only
+        </Text>
 
         {/** Form */}
         <View style={styles.form}>
@@ -103,51 +113,6 @@ const Login = () => {
           {errors.email && (
             <Text style={styles.errorText}>{errors.email.message}</Text>
           )}
-          <Controller
-            control={control}
-            rules={{
-              maxLength: 100,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <View style={styles.inpt}>
-                <TextInput
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholderTextColor={Colors.light.gray}
-                  secureTextEntry={!viewPassword}
-                  placeholder="Password"
-                />
-                {viewPassword ? (
-                  <Ionicons
-                    onPress={() => setviewPassword(!viewPassword)}
-                    style={{ position: "absolute", right: 7, top: "50%" }}
-                    name="eye-off"
-                    size={20}
-                    color={Colors.light.primary}
-                  />
-                ) : (
-                  <Ionicons
-                    onPress={() => setviewPassword(!viewPassword)}
-                    style={{ position: "absolute", right: 7, top: "50%" }}
-                    name="eye"
-                    size={20}
-                    color={Colors.light.primary}
-                  />
-                )}
-              </View>
-            )}
-            name="password"
-          />
-          {errors.password && (
-            <Text style={styles.errorText}>{errors.password.message}</Text>
-          )}
-
-          <View style={styles.forgetcontainer}>
-            <Link href={"/(auth)/login"} style={styles.forget}>
-              <Text>Forgot Your password?</Text>
-            </Link>
-          </View>
 
           <TouchableOpacity
             onPress={handleSubmit(handleLogin)}
@@ -157,7 +122,7 @@ const Login = () => {
               <ActivityIndicator size="small" color="#fff" />
             ) : (
               <Text style={{ alignSelf: "center", color: "#fff" }}>
-                Sign in
+                Sign in magic
               </Text>
             )}
           </TouchableOpacity>
@@ -219,6 +184,4 @@ const Login = () => {
       </View>
     </SafeAreaView>
   );
-};
-
-export default Login;
+}

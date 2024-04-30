@@ -13,7 +13,7 @@ export default function Home() {
             Email-password
           </Text>
         </Link>
-        <Link href={"/(auth)/all/magin-link"} style={styles.press}>
+        <Link href={"/(auth)/all/magic-link"} style={styles.press}>
           <Text style={{ color: "#fff", textAlign: "center" }}>
             Email Magic Link
           </Text>

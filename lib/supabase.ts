@@ -5,6 +5,8 @@ import * as aesjs from "aes-js";
 import { createClient } from "@supabase/supabase-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import "react-native-get-random-values";
+import { Platform } from "react-native";
+
 class LargeSecureStore {
   private async _encrypt(key: string, value: string) {
     const encryptionKey = crypto.getRandomValues(new Uint8Array(256 / 8));
@@ -15,19 +17,28 @@ class LargeSecureStore {
     );
     const encryptedBytes = cipher.encrypt(aesjs.utils.utf8.toBytes(value));
 
-    await SecureStore.setItemAsync(
-      key,
-      aesjs.utils.hex.fromBytes(encryptionKey)
-    );
+    if (Platform.OS !== "web") {
+      await SecureStore.setItemAsync(
+        key,
+        aesjs.utils.hex.fromBytes(encryptionKey)
+      );
+    }
     return aesjs.utils.hex.fromBytes(encryptedBytes);
   }
 
   private async _decrypt(key: string, value: string) {
-    const encryptionKeyHex = await SecureStore.getItemAsync(key);
-    if (!encryptionKeyHex) {
-      return encryptionKeyHex;
+    let encryptionKeyHex;
+    if (Platform.OS !== "web") {
+      encryptionKeyHex = await SecureStore.getItemAsync(key);
+      if (!encryptionKeyHex) {
+        return encryptionKeyHex;
+      }
+    } else {
+      encryptionKeyHex = await AsyncStorage.getItem(key);
+      if (!encryptionKeyHex) {
+        return encryptionKeyHex;
+      }
     }
-
     const cipher = new aesjs.ModeOfOperation.ctr(
       aesjs.utils.hex.toBytes(encryptionKeyHex),
       new aesjs.Counter(1)
@@ -48,7 +59,10 @@ class LargeSecureStore {
 
   async removeItem(key: string) {
     await AsyncStorage.removeItem(key);
-    await SecureStore.deleteItemAsync(key);
+
+    if (Platform.OS !== "web") {
+      await SecureStore.deleteItemAsync(key);
+    }
   }
 
   async setItem(key: string, value: string) {
@@ -63,7 +77,7 @@ const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    storage: new LargeSecureStore(), // Asyncstorage
+    storage: new LargeSecureStore(), // Platform.OS !== "web" ?new LargeSecureStore(): AsyncStorage, // AsyncStorage
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,

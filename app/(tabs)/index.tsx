@@ -43,6 +43,10 @@ export default function TabOneScreen() {
       <Pressable onPress={handleLogout}>
         <Text>Logout</Text>
       </Pressable>
+
+      <Link href={"/"} style={{ marginTop: 15 }}>
+        Home
+      </Link>
     </View>
   );
 }

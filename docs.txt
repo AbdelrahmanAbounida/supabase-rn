@@ -49,3 +49,6 @@ npm install react-hook-form @hookform/resolvers zod
 
 
 
+*******************************
+changing app schema 
+*******************************
