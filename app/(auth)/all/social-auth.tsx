@@ -1,11 +1,12 @@
 import { View, Text, Touchable, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import GoogleAuthButton from "@/components/auth/google";
+import GithubAuthButton from "@/components/auth/github";
 
 export default function SocialAuth() {
+  const handleSocialAuthentication = async () => {};
   return (
     <SafeAreaView style={{ padding: 20 }}>
       <View
@@ -18,12 +19,8 @@ export default function SocialAuth() {
           gap: 20,
         }}
       >
-        <TouchableOpacity>
-          {/* <Ionicons
-            name="logo-google"
-            size={20}
-            style={{ backgroundColor: "#FCFCFC", borderRadius: 4, padding: 10 }}
-          /> */}
+        {/* <GoogleAuthButton /> */}
+        {/* <TouchableOpacity>
           <Image
             contentFit="contain"
             style={{
@@ -33,13 +30,8 @@ export default function SocialAuth() {
             }}
             source="https://banner2.cleanpng.com/20180423/gkw/kisspng-google-logo-logo-logo-5ade7dc753b015.9317679115245306313428.jpg"
           />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          {/* <Ionicons
-            name="logo-facebook"
-            size={20}
-            style={{ backgroundColor: "#FCFCFC", borderRadius: 4, padding: 10 }}
-          /> */}
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity>
           <Image
             contentFit="contain"
             style={{
@@ -49,13 +41,9 @@ export default function SocialAuth() {
             }}
             source="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/768px-Facebook_Logo_%282019%29.png"
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <GithubAuthButton />
         <TouchableOpacity>
-          {/* <Ionicons
-            name="logo-apple"
-            size={20}
-            style={{ backgroundColor: "#FCFCFC", borderRadius: 4, padding: 10 }}
-          /> */}
           <Image
             contentFit="contain"
             style={{
@@ -67,11 +55,6 @@ export default function SocialAuth() {
           />
         </TouchableOpacity>
         <TouchableOpacity>
-          {/* <Ionicons
-            name="logo-microsoft"
-            size={20}
-            style={{ backgroundColor: "#FCFCFC", borderRadius: 4, padding: 10 }}
-          /> */}
           <Image
             contentFit="contain"
             style={{
@@ -83,11 +66,6 @@ export default function SocialAuth() {
           />
         </TouchableOpacity>
         <TouchableOpacity>
-          {/* <Ionicons
-            name="logo-twitter"
-            size={20}
-            style={{ backgroundColor: "#FCFCFC", borderRadius: 4, padding: 10 }}
-          /> */}
           <Image
             contentFit="contain"
             style={{
@@ -99,11 +77,6 @@ export default function SocialAuth() {
           />
         </TouchableOpacity>
         <TouchableOpacity>
-          {/* <Ionicons
-            name="logo-github"
-            size={20}
-            style={{ backgroundColor: "#FCFCFC", borderRadius: 4, padding: 10 }}
-          /> */}
           <Image
             contentFit="contain"
             style={{
@@ -111,15 +84,10 @@ export default function SocialAuth() {
               height: 43,
               borderRadius: 4,
             }}
-            source="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/GitHub_Invertocat_Logo.svg/1200px-GitHub_Invertocat_Logo.svg.png"
+            source="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/768px-Facebook_Logo_%282019%29.png"
           />
         </TouchableOpacity>
         <TouchableOpacity>
-          {/* <Ionicons
-            name="logo-gitlab"
-            size={20}
-            style={{ backgroundColor: "#FCFCFC", borderRadius: 4, padding: 10 }}
-          /> */}
           <Image
             contentFit="contain"
             style={{
@@ -131,11 +99,6 @@ export default function SocialAuth() {
           />
         </TouchableOpacity>
         <TouchableOpacity>
-          {/* <Ionicons
-            name="logo-bitbucket"
-            size={20}
-            style={{ backgroundColor: "#FCFCFC", borderRadius: 4, padding: 10 }}
-          /> */}
           <Image
             contentFit="contain"
             style={{
@@ -147,11 +110,6 @@ export default function SocialAuth() {
           />
         </TouchableOpacity>
         <TouchableOpacity>
-          {/* <Ionicons
-            name="logo-discord"
-            size={20}
-            style={{ backgroundColor: "#FCFCFC", borderRadius: 4, padding: 10 }}
-          /> */}
           <Image
             contentFit="contain"
             style={{

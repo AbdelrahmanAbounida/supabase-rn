@@ -13,6 +13,9 @@ import { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import { AUTH_ROUTES, PUBLIC_ROUTES } from "@/constants/routes";
 import { makeRedirectUri } from "expo-auth-session";
+import SplashScreenView from "@/components/SplashScreenView";
+import { RootSiblingParent } from "react-native-root-siblings";
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -43,8 +46,9 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
+  // show splash screen here
   if (!loaded) {
-    return null;
+    return <SplashScreenView />;
   }
 
   return <RootLayoutNav />;
@@ -55,15 +59,18 @@ function RootLayoutNav() {
 
   // check session here
   const [session, setSession] = useState<Session | null>(null);
+  const [loading, setloading] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setloading(false);
     });
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
   }, []);
+
   const currentPath = usePathname();
   const router = useRouter();
 
@@ -71,30 +78,46 @@ function RootLayoutNav() {
   console.log({ redirectTo });
 
   useEffect(() => {
-    if (session) {
-      if (AUTH_ROUTES.includes(currentPath)) {
-        router.push("/(tabs)");
+    console.log({ currentPath });
+    if (!loading) {
+      console.log("Not Loading");
+      if (session) {
+        console.log({ session });
+        if (AUTH_ROUTES.includes(currentPath)) {
+          router.push("/(tabs)");
+        }
+      } else {
+        console.log("Session not exist");
+        if (PUBLIC_ROUTES.includes(currentPath)) {
+          return;
+        } else if (!AUTH_ROUTES.includes(currentPath)) {
+          const routeNotAuth = AUTH_ROUTES.find((route) => {
+            return currentPath.startsWith(route);
+          });
+          if (!routeNotAuth) {
+            console.log({ currentPath });
+            router.push("/login");
+          }
+        }
       }
     } else {
-      if (PUBLIC_ROUTES.includes(currentPath)) {
-        return;
-      } else if (!AUTH_ROUTES.includes(currentPath)) {
-        // router.push("/(auth)/login");
-        console.log("true");
-        console.log(currentPath);
-        router.push("/login");
-      }
+      console.log("Loading");
     }
-  }, [session, currentPath]);
+  }, [session, currentPath, loading]);
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal/index" options={{ presentation: "modal" }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      </Stack>
-    </ThemeProvider>
+    <RootSiblingParent>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="modal/index"
+            options={{ presentation: "modal" }}
+          />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        </Stack>
+      </ThemeProvider>
+    </RootSiblingParent>
   );
 }

@@ -52,3 +52,169 @@ npm install react-hook-form @hookform/resolvers zod
 *******************************
 changing app schema 
 *******************************
+
+
+
+*******************************
+Splash screen
+*******************************
+npx expo install expo-splash-screen
+
+
+u can do it manually from app.json splash option 
+or create cusom page and show it while loading data from api
+
+
+
+
+*******************************
+OTP
+*******************************
+both magic link and otp has same function 
+signInWithOtp
+
+So u have to edit the email template in (magic link) tab to determine which one to use 
+either inlclude a link or token
+
+
+<h2>One time login code</h2>
+
+<p>Please enter this code: {{ .Token }}</p>
+
+
+>> for OTP use react-native-otp-entry
+>> for PhoneNumber use:
+- react-native-phone-number-input
+- react-native-phone-input
+- react-native-international-phone-number
+
+
+
+>> u can validate the phone manually using one of those 2 libs
+
+- import validator from "validator"; >> for zod 
+- npm i libphonenumber-js@1.10.4
+
+
+
+
+
+*******************************
+Google OAuth
+*******************************
+https://developer.android.com/training/sign-in/passkeys#groovy
+
+
+##########################
+1- client_id generation
+##########################
+
+# to make the app ready for production (ios, android)
+
+>> npx expo prebuild 
+> now in app.json 
+- ios > has bundleIdentifier
+- android > has package
+
+>> use above identifiers in google console to create ios/android 
+
+>> for android keystore, generate keystore (just press enter for password)
+keytool -keystore ./android/app/debug.keystore -list -v
+
+SHA1: 5E:8F:16:06:2E:A3:CD:2C:4A:0D:54:78:76:BA:A6:F3:8C:AB:F6:25
+SHA256: FA:C6:17:45:DC:09:03:78:6F:B9:ED:E6:2A:96:2B:39:9F:73:48:F0:BB:6F:89:9B:83:32:66:75:91:03:3B:9C
+
+
+
+##########################
+2- app.json 
+##########################
+>> get iOS URL scheme from google ios app console 
+{
+  "ios": {
+    ...
+    "infoPlist": {
+      "CFBundleURLTypes": [
+        {
+          "CFBundleURLSchemes": ["com.googleusercontent.apps.17898xxxxxx-xxxxxqhqj0exxxxxpl03xxx"]
+        }
+      ]
+    }
+  }
+}
+
+add also this to plugin 
+[
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps._some_id_here_" // iOS URL scheme 
+        }
+]
+
+
+##########################
+3- building  
+##########################
+>> npx expo prebuild --clean
+>> npx expo run:android && npx expo run:ios
+
+>> use EAS 
+
+email: abdelrahmanaboneda@gmail.com
+username: aboneda
+password:Aa2964079
+
+>> eas login 
+>> eas credentials
+
+
+####################################################
+ Obtain Your SHA Fingerprint and Application Bundle Name
+####################################################
+
+
+>> npx expo install expo-updates
+>> eas update:configure
+>> eas build:configure
+and choose all 
+
+
+>> eas build --profile development --platform android
+
+
+
+
+##########################
+Archive
+##########################
+>> npx expo install expo-web-browser
+>> add those 2 lines at the beginning of the file 
+import * as WebBrowser from 'expo-web-browser';
+WebBrowser.maybeCompleteAuthSession()
+
+
+
+>> to app/build.gradle 
+
+add to dependecies 
+implementation "androidx.credentials:credentials-play-services-auth:1.3.0-alpha03"
+
+>> to app/proguard-rules.pro add 
+-if class androidx.credentials.CredentialManager
+-keep class androidx.credentials.playservices.** {
+  *;
+}
+
+>> go to google console and provide the package name in app.json and SHA1 certificate from keystore
+
+
+>> go to get client id (create 3  apps one for web, android and one for ios)
+https://console.cloud.google.com/apis/credentials/oauthclient?
+
+
+
+
+*******************************
+Github OAuth
+*******************************
+https://github.com/settings/applications/new
